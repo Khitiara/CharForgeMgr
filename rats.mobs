@@ -1,0 +1,22 @@
+{
+  "Wererat": {
+    "xp": 450,
+    "name": "Wererat",
+    "initBonus": 2,
+    "hd": {
+      "num": 6,
+      "size": 8
+    },
+    "conMod": 1
+  },
+  "Giant Rat": {
+    "xp": 25,
+    "name": "Giant Rat",
+    "initBonus": 2,
+    "hd": {
+      "num": 2,
+      "size": 6
+    },
+    "conMod": 0
+  }
+}

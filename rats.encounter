@@ -1,0 +1,7 @@
+{
+  "name": "Rats",
+  "mobs": {
+    "Wererat": 2,
+    "Giant Rat": 3
+  }
+}
