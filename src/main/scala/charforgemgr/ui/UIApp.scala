@@ -3,8 +3,11 @@ package charforgemgr.ui
 import java.io.FileInputStream
 
 import charforgemgr._
+import charforgemgr.picker.DrivePicker
 import com.google.api.services.drive.Drive
 import com.google.api.services.sheets.v4.Sheets
+import com.google.common.base.Charsets
+import com.google.common.io.Files
 import play.api.libs.json.{Format, JsError, JsSuccess, Json}
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
@@ -58,6 +61,75 @@ object UIApp extends JFXApp {
         menus = List(
           new Menu("File") {
             items = List(
+              new MenuItem("New Party...") {
+                onAction = {
+                  e: ActionEvent =>
+                    val (cancel, future) = DrivePicker.run()
+                    val dialog = new Alert(AlertType.None) {
+                      title = "Browsing for Google Sheets..."
+                      headerText = "Please use your browser to select your party google sheets."
+                      buttonTypes = Seq(ButtonType.Cancel)
+                    }
+                    val filesProp = new ObjectProperty[Array[String]]
+                    future.onComplete {
+                      case Success(files) =>
+                        dialog.result = ButtonType.OK
+                        filesProp.value = files
+                        dialog.close()
+                      case Failure(ex) =>
+                        dialog.result = ButtonType.Cancel
+                        dialog.close()
+                        new Alert(AlertType.Error) {
+                          initOwner(stage)
+                          title = "Error"
+                          headerText = "Could not load player files"
+                          contentText = ex.getMessage
+                        }.showAndWait()
+                    }(executor)
+                    dialog.showAndWait() match {
+                      case Some(ButtonType.OK) =>
+                        val ids = filesProp.value
+                        new TextInputDialog {
+                          title = "Party Name"
+                          headerText = "What should this party be called?"
+                        }.showAndWait() match {
+                          case Some(name) =>
+                            val newParty = Party(name, ids.map(new CharForgeSheet(sheets, _)))
+                            newParty.preLoad.onComplete({
+                              case Success(p1) =>
+                                party.value = p1
+                              case Failure(ex) =>
+                                new Alert(AlertType.Error) {
+                                  initOwner(stage)
+                                  title = "Network Error"
+                                  headerText = "Could not load player data"
+                                  contentText = ex.getMessage
+                                }.showAndWait()
+                            })(executor)
+                            new Alert(AlertType.Confirmation) {
+                              title = "Save Party?"
+                              headerText = "Should the new party be saved?"
+                              buttonTypes = Seq(ButtonType.Yes, ButtonType.No)
+                            }.showAndWait() match {
+                              case Some(ButtonType.Yes) =>
+                                new FileChooser {
+                                  title = "Save Party File"
+                                  extensionFilters.add(new ExtensionFilter("Party Files", "*.party"))
+                                }.showSaveDialog(stage) match {
+                                  case null =>
+                                  case f => Files.write(Json.toJson(newParty).toString(), f, Charsets.UTF_8)
+                                }
+                              case _ =>
+                                //We are done here.
+                            }
+                          case None =>
+                            //We are done here.
+                        }
+                      case _ =>
+                        // We are done here.
+                    }
+                }
+              },
               new MenuItem("Open Party...") {
                 onAction = {
                   e: ActionEvent =>

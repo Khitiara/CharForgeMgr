@@ -2,3 +2,4 @@
 .charforgemgr/
 .idea/
 **/*.party
+**/target/

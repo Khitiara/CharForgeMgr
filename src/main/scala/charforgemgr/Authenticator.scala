@@ -13,7 +13,7 @@ import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.sheets.v4.Sheets
 
-import scala.collection.convert.decorateAll._
+import scala.collection.JavaConverters._
 
 object Authenticator {
   lazy val cred: Credential = authenticate()
@@ -31,7 +31,12 @@ object Authenticator {
     new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user")
   }
 
-  def services(): (Sheets, Drive) = (new Sheets.Builder(transport, factory, cred)
-    .setApplicationName("Charforge Manager")
-    .build(), new Drive.Builder(transport, factory, cred).setApplicationName("Charforge Manager").build())
+  def services(): (Sheets, Drive) = (
+    new Sheets.Builder(transport, factory, cred)
+      .setApplicationName("Charforge Manager")
+      .build(),
+    new Drive.Builder(transport, factory, cred)
+      .setApplicationName("Charforge Manager")
+      .build()
+  )
 }

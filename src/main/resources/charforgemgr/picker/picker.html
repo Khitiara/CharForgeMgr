@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Google Picker Example</title>
+
+    <script type="text/javascript">
+
+        // The Browser API key obtained from the Google API Console.
+        // Replace with your own Browser API key, or your own key.
+        var developerKey = 'AIzaSyB3Nr7FHuZ7PunCAB4DQmaexms6IwhKciU';
+
+        // The Client ID obtained from the Google API Console. Replace with your own Client ID.
+        var clientId = "235822593390-9eidv31952pv3k9lmubhc95tls3ob4j3.apps.googleusercontent.com";
+
+        // Replace with your own project number from console.developers.google.com.
+        // See "Project number" under "IAM & Admin" > "Settings"
+        var appId = "235822593390";
+
+        // Scope to use to access user's Drive items.
+        var scope = ['https://www.googleapis.com/auth/drive.readonly'];
+
+        var pickerApiLoaded = false;
+        var oauthToken;
+
+        // Use the Google API Loader script to load the google.picker script.
+        function loadPicker() {
+            gapi.load('auth', {'callback': onAuthApiLoad});
+            gapi.load('picker', {'callback': onPickerApiLoad});
+        }
+
+        function onAuthApiLoad() {
+            window.gapi.auth.authorize(
+                {
+                    'client_id': clientId,
+                    'scope': scope,
+                    'immediate': false
+                },
+                handleAuthResult);
+        }
+
+        function onPickerApiLoad() {
+            pickerApiLoaded = true;
+            createPicker();
+        }
+
+        function handleAuthResult(authResult) {
+            if (authResult && !authResult.error) {
+                oauthToken = authResult.access_token;
+                createPicker();
+            }
+        }
+
+        // Create and render a Picker object for searching images.
+        function createPicker() {
+            if (pickerApiLoaded && oauthToken) {
+                var view = new google.picker.DocsView()
+                    .setIncludeFolders(true)
+                    .setSelectFolderEnabled(false)
+                    .setMimeTypes("application/vnd.google-apps.spreadsheet")
+                    .setParent("root")
+                    .setMode(google.picker.DocsViewMode.LIST);
+                var picker = new google.picker.PickerBuilder()
+                    .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                    .setAppId(appId)
+                    .setOAuthToken(oauthToken)
+                    .addView(view)
+                    .setDeveloperKey(developerKey)
+                    .setCallback(pickerCallback)
+                    .build();
+                picker.setVisible(true);
+            }
+        }
+
+        // A simple callback implementation.
+        function pickerCallback(data) {
+            // noinspection EqualityComparisonWithCoercionJS
+            if (data.action == google.picker.Action.PICKED) {
+                var files = data.docs.map(function (f) {
+                    return f.id;
+                });
+                var form1 = document.getElementsByName("result-hack")[0];
+                console.log(form1.name);
+                var input1 = document.getElementsByName("result-input")[0];
+                input1.value = JSON.stringify(files);
+                form1.submit();
+            }
+        }
+    </script>
+</head>
+<body>
+<form name="result-hack" method="post" action="/files">
+    <input type="hidden" name="result-input">
+</form>
+<div id="result"></div>
+
+<!-- The Google API Loader script. -->
+<script type="text/javascript" src="https://apis.google.com/js/api.js?onload=loadPicker"></script>
+</body>
+</html>

@@ -8,41 +8,24 @@ import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Future
 
 class CharForgeSheet(app: Sheets, val id: String) extends Helpers {
-  def strScore: Future[Int] = readInt("Str")
-
-  def strMod: Future[Int] = readInt("StrMod")
-
-  def strSave: Future[Int] = readInt("Final!$Y$81")
-
-  def dexScore: Future[Int] = readInt("Dex")
-
-  def dexMod: Future[Int] = readInt("DexMod")
-
-  def dexSave: Future[Int] = readInt("Final!$Z$81")
-
-  def conScore: Future[Int] = readInt("Con")
-
-  def conMod: Future[Int] = readInt("ConMod")
-
-  def conSave: Future[Int] = readInt("Final!$AA$81")
-
-  def intScore: Future[Int] = readInt("Int")
-
-  def intMod: Future[Int] = readInt("IntMod")
-
-  def intSave: Future[Int] = readInt("Final!$AB$81")
-
-  def wisScore: Future[Int] = readInt("Wis")
-
-  def wisMod: Future[Int] = readInt("WisMod")
-
-  def wisSave: Future[Int] = readInt("Final!$AC$81")
-
-  def chaScore: Future[Int] = readInt("Cha")
-
-  def chaMod: Future[Int] = readInt("ChaMod")
-
-  def chaSave: Future[Int] = readInt("Final!$AD$81")
+//  def strScore: Future[Int] = readInt("Str")
+//  def strMod: Future[Int] = readInt("StrMod")
+//  def strSave: Future[Int] = readInt("Final!$Y$81")
+//  def dexScore: Future[Int] = readInt("Dex")
+//  def dexMod: Future[Int] = readInt("DexMod")
+//  def dexSave: Future[Int] = readInt("Final!$Z$81")
+//  def conScore: Future[Int] = readInt("Con")
+//  def conMod: Future[Int] = readInt("ConMod")
+//  def conSave: Future[Int] = readInt("Final!$AA$81")
+//  def intScore: Future[Int] = readInt("Int")
+//  def intMod: Future[Int] = readInt("IntMod")
+//  def intSave: Future[Int] = readInt("Final!$AB$81")
+//  def wisScore: Future[Int] = readInt("Wis")
+//  def wisMod: Future[Int] = readInt("WisMod")
+//  def wisSave: Future[Int] = readInt("Final!$AC$81")
+//  def chaScore: Future[Int] = readInt("Cha")
+//  def chaMod: Future[Int] = readInt("ChaMod")
+//  def chaSave: Future[Int] = readInt("Final!$AD$81")
 
   def maxHp: Future[Int] = readInt("HP")
 
